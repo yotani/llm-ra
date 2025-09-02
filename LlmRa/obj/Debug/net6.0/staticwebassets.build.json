@@ -1,11 +1,71 @@
 {
   "Version": 1,
-  "Hash": "OwWgj4ogZP63JJ5d0ziS24pK9QxVoF4c3RSeyMkRLb4=",
+  "Hash": "noFjdeMVB1Y1mq5CAFTBjJzYavFIje/N9KVV1HiD8Uc=",
   "Source": "LlmRa",
   "BasePath": "_content/LlmRa",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "LlmRa\\wwwroot",
+      "Source": "LlmRa",
+      "ContentRoot": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\",
+      "BasePath": "_content/LlmRa",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\css\\style.css",
+      "SourceId": "LlmRa",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\",
+      "BasePath": "_content/LlmRa",
+      "RelativePath": "css/style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\style.css"
+    },
+    {
+      "Identity": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\index.html",
+      "SourceId": "LlmRa",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\",
+      "BasePath": "_content/LlmRa",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\js\\script.js",
+      "SourceId": "LlmRa",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\llm-code\\llm-ra\\llmra\\wwwroot\\",
+      "BasePath": "_content/LlmRa",
+      "RelativePath": "js/script.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\script.js"
+    }
+  ]
 }
