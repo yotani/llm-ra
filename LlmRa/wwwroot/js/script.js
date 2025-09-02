@@ -126,7 +126,7 @@
         try {
             // Step 1: Get chat logs from AnythingLLM
             // NOTE: Replace 'your-workspace-name' with the actual workspace name
-            const anythingLlmResponse = await fetch('/api/AnythingLLM/chat-logs/your-workspace-name');
+            const anythingLlmResponse = await fetch('/api/AnythingLLM/chat-logs/ecd0fd9d-9174-4ace-a7d8-b0ce9802231b');
             if (!anythingLlmResponse.ok) {
                 throw new Error(`無法從 AnythingLLM 獲取資料: ${anythingLlmResponse.statusText}`);
             }
