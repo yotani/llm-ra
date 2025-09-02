@@ -19,6 +19,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles(); // Serve static files from wwwroot
+
 app.UseAuthorization();
 
 app.MapControllers();

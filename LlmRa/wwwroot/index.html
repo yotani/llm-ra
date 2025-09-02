@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消防數據分析儀表板</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🔥 消防數據分析儀表板</h1>
+            <p>上傳數據以生成圖表，或設定 API 金鑰以獲取專家建議</p>
+        </header>
+
+        <main>
+            <div class="card api-config-card">
+                <h2>AI 專家建議 API 配置 (OpenAI)</h2>
+                <div class="api-input-group">
+                    <input type="password" id="api-key-input" placeholder="請輸入您的 OpenAI API Key">
+                    <button id="save-api-key-btn" class="btn btn-green">儲存金鑰</button>
+                </div>
+                <p id="api-status" class="status-disconnected">狀態：未連線</p>
+            </div>
+
+            <div class="card analysis-trigger-card">
+                <h2>1. 執行分析</h2>
+                <p>點擊下方按鈕，系統將從 Anything LLM 獲取法規工作區的對話記錄並進行分析。</p>
+                <button id="start-analysis-btn" class="btn btn-blue">🚀 開始分析</button>
+            </div>
+
+            <div id="loading-indicator" class="hidden">
+                <div class="spinner"></div>
+                <p>分析中，請稍候...</p>
+            </div>
+
+            <div id="error-display" class="card error-card hidden">
+                <h3>錯誤</h3>
+                <p id="error-message"></p>
+            </div>
+
+            <div class="card chart-section">
+                <h2>2. 分類統計圖表</h2>
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <h3>最常出現的提問</h3>
+                        <canvas id="common-questions-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>問題關鍵字 Top 10</h3>
+                        <canvas id="top-keywords-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>單月提問次數最多使用者</h3>
+                        <canvas id="active-users-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card advice-card">
+                <h2>3. AI 消防專家建議</h2>
+                <button class="btn btn-blue" disabled>獲取專家建議與預防方式</button>
+                <button class="btn btn-orange" disabled>下載建議報告</button>
+                <div class="advice-content">
+                    <p>此功能將在未來版本中提供。</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
