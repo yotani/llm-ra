@@ -50,6 +50,7 @@
     }
 
     function renderCharts(analysisData) {
+        console.log('Rendering charts with data:', analysisData);
         destroyCharts(); // Clear previous charts
 
         const chartOptions = {
@@ -72,7 +73,7 @@
         };
 
         // 1. Common Questions Chart (Bar)
-        if (analysisData.most_common_questions) {
+        if (analysisData.most_common_questions && analysisData.most_common_questions.length > 0) {
             const cqCtx = document.getElementById('common-questions-chart').getContext('2d');
             commonQuestionsChart = createChart(cqCtx, 'bar', {
                 labels: analysisData.most_common_questions.map((q, i) => `問題 ${i + 1}`),
@@ -85,10 +86,10 @@
         }
 
         // 2. Top Keywords Chart (Doughnut)
-        if (analysisData.top_keywords) {
+        if (analysisData.top_keywords && analysisData.top_keywords.length > 0) {
             const tkCtx = document.getElementById('top-keywords-chart').getContext('2d');
-            const keywords = Object.keys(analysisData.top_keywords);
-            const counts = Object.values(analysisData.top_keywords);
+            const keywords = analysisData.top_keywords.map(k => k.keyword);
+            const counts = analysisData.top_keywords.map(k => k.count);
             
             topKeywordsChart = createChart(tkCtx, 'doughnut', {
                 labels: keywords,
@@ -101,7 +102,7 @@
         }
 
         // 3. Active Users Chart (Horizontal Bar)
-        if (analysisData.most_active_users) {
+        if (analysisData.most_active_users && analysisData.most_active_users.length > 0) {
             const auCtx = document.getElementById('active-users-chart').getContext('2d');
             activeUsersChart = createChart(auCtx, 'bar', {
                 labels: analysisData.most_active_users,
