@@ -19,6 +19,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseDefaultFiles(); // Enable default files (index.html)
 app.UseStaticFiles(); // Serve static files from wwwroot
 
 app.UseAuthorization();

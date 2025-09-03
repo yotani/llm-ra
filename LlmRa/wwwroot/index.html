@@ -28,7 +28,11 @@
             <div class="card analysis-trigger-card">
                 <h2>1. 執行分析</h2>
                 <p>點擊下方按鈕，系統將從 Anything LLM 獲取法規工作區的對話記錄並進行分析。</p>
-                <button id="start-analysis-btn" class="btn btn-blue">🚀 開始分析</button>
+                <p id="analysis-status" class="status-no-cache">狀態：無快取資料</p>
+                <div class="button-group">
+                    <button id="start-analysis-btn" class="btn btn-blue">🚀 開始分析</button>
+                    <button id="clear-cache-btn" class="btn btn-gray">🗑️ 清除快取</button>
+                </div>
             </div>
 
             <div id="loading-indicator" class="hidden">

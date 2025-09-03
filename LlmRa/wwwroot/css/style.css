@@ -78,6 +78,16 @@ header p {
     font-weight: bold;
 }
 
+.status-cached {
+    color: #4299e1; /* Blue */
+    font-weight: bold;
+}
+
+.status-no-cache {
+    color: #a0aec0; /* Gray */
+    font-weight: bold;
+}
+
 /* Buttons */
 .btn {
     padding: 10px 20px;
@@ -111,10 +121,23 @@ header p {
 }
 .btn-orange:hover { background-color: #ed8936; }
 
+.btn-gray {
+    background-color: #4a5568;
+    color: white;
+}
+.btn-gray:hover { background-color: #6b7280; }
+
 .btn:disabled {
     background-color: #4a5568;
     cursor: not-allowed;
     transform: none;
+}
+
+/* Button Groups */
+.button-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 

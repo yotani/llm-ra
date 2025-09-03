@@ -11,6 +11,9 @@
 
     // Chart instances
     let commonQuestionsChart, topKeywordsChart, activeUsersChart;
+    
+    // Analysis result cache
+    let cachedAnalysisResult = null;
 
     // --- Helper Functions ---
     function showLoading(isLoading) {
@@ -171,15 +174,44 @@
         }
 
         try {
+            // Check if we have cached analysis result
+            if (cachedAnalysisResult) {
+                console.log('使用快取的分析結果:', cachedAnalysisResult);
+                
+                // Just log the usage instead of fetching again
+                const logResponse = await fetch('/api/Analysis/log-usage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'reuse_analysis_result',
+                        timestamp: new Date().toISOString(),
+                        message: '重複使用快取的 OpenAI 分析結果'
+                    })
+                });
+                
+                if (logResponse.ok) {
+                    console.log('使用記錄已記錄');
+                } else {
+                    console.warn('無法記錄使用情況，但繼續執行');
+                }
+                
+                // Directly render charts with cached data
+                renderCharts(cachedAnalysisResult);
+                updateAnalysisStatus();
+                return;
+            }
+
             // Step 1: Get chat logs from AnythingLLM
-            // NOTE: Replace 'your-workspace-name' with the actual workspace name
+            console.log('從 AnythingLLM 獲取聊天記錄...');
             const anythingLlmResponse = await fetch('/api/AnythingLLM/chat-logs/ecd0fd9d-9174-4ace-a7d8-b0ce9802231b');
             if (!anythingLlmResponse.ok) {
                 throw new Error(`無法從 AnythingLLM 獲取資料: ${anythingLlmResponse.statusText}`);
             }
             const chatLogs = await anythingLlmResponse.text();
+            console.log('已獲取聊天記錄');
 
             // Step 2: Send logs to OpenAI for analysis
+            console.log('正在發送資料至 OpenAI 進行分析...');
             const openAiResponse = await fetch('/api/OpenAi/analyze', {
                 method: 'POST',
                 headers: {
@@ -192,41 +224,62 @@
                 throw new Error(`OpenAI 分析失敗: ${openAiResponse.statusText}`);
             }
             const analysisJson = await openAiResponse.json();
-
-            // Step 3: Post the result for validation and storage
+            console.log('OpenAI 分析完成:', analysisJson);
+            
+            // Step 3: Post the result for validation and storage (optional logging)
+            console.log('更新分析結果...');
             const updateResponse = await fetch('/api/Analysis/update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(analysisJson)
             });
             if (!updateResponse.ok) {
-                throw new Error(`分析結果更新失敗: ${updateResponse.statusText}`);
+                console.warn('分析結果更新失敗，但繼續處理:', updateResponse.statusText);
             }
 
-            // Step 4: Get the final, validated data
-            const finalResultResponse = await fetch('/api/Analysis/results');
-            if (!finalResultResponse.ok) {
-                throw new Error(`無法獲取最終分析結果: ${finalResultResponse.statusText}`);
-            }
-            const finalData = await finalResultResponse.json();
-            console.log('Raw API response:', finalData);
-
-            // Transform the data to match the expected format
+            // Transform the OpenAI data directly for chart rendering
             const transformedData = {
-                most_common_questions: finalData.most_common_questions || [],
-                top_keywords: finalData.top_keywords || {},
-                most_active_users: finalData.most_active_users || []
+                most_common_questions: analysisJson.most_common_questions || [],
+                top_keywords: analysisJson.top_keywords || {},
+                most_active_users: analysisJson.most_active_users || []
             };
 
-            console.log('Transformed data:', transformedData);
+            console.log('直接使用 OpenAI 結果轉換後的資料:', transformedData);
 
-            // Step 5: Render the charts
+            // Cache the result for future use
+            cachedAnalysisResult = transformedData;
+            console.log('分析結果已快取，後續使用將直接載入');
+            updateAnalysisStatus();
+
+            // Step 4: Render the charts directly with OpenAI result
             renderCharts(transformedData);
 
         } catch (error) {
+            console.error('分析過程發生錯誤:', error);
             showError(error.message);
         } finally {
             showLoading(false);
+        }
+    }
+
+    // Function to clear cached analysis result
+    function clearAnalysisCache() {
+        cachedAnalysisResult = null;
+        console.log('分析結果快取已清除');
+        updateAnalysisStatus();
+    }
+
+    // Function to update analysis status display
+    function updateAnalysisStatus() {
+        const statusElement = document.getElementById('analysis-status');
+        if (statusElement) {
+            if (cachedAnalysisResult) {
+                statusElement.textContent = '狀態：已有分析結果（使用快取）';
+                statusElement.className = 'status-cached';
+            } else {
+                statusElement.textContent = '狀態：無快取資料';
+                statusElement.className = 'status-no-cache';
+            }
         }
     }
 
@@ -242,9 +295,16 @@
 
     startAnalysisBtn.addEventListener('click', startAnalysis);
 
+    // Add event listener for clear cache button if it exists
+    const clearCacheBtn = document.getElementById('clear-cache-btn');
+    if (clearCacheBtn) {
+        clearCacheBtn.addEventListener('click', clearAnalysisCache);
+    }
+
     // --- Initial Setup ---
     document.addEventListener('DOMContentLoaded', () => {
         updateApiStatus();
+        updateAnalysisStatus();
         destroyCharts(); // Ensure a clean state on load
     });
 

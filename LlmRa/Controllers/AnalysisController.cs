@@ -57,5 +57,31 @@ namespace LlmRa.Controllers
 
             return Ok(_latestAnalysisResult);
         }
+
+        /// <summary>
+        /// Endpoint to log usage activities (e.g., reusing cached analysis results).
+        /// </summary>
+        [HttpPost("log-usage")]
+        public IActionResult LogUsage([FromBody] LogUsageRequest logRequest)
+        {
+            if (logRequest == null)
+            {
+                return BadRequest("Log request cannot be null.");
+            }
+
+            // In a real application, you would save this to a proper logging system
+            // For now, we'll just log to console and return success
+            Console.WriteLine($"[{logRequest.Timestamp}] {logRequest.Action}: {logRequest.Message}");
+            
+            return Ok("Usage logged successfully.");
+        }
+    }
+
+    // Model for log usage requests
+    public class LogUsageRequest
+    {
+        public string Action { get; set; } = string.Empty;
+        public string Timestamp { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
     }
 }
