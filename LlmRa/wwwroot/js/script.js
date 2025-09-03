@@ -57,7 +57,7 @@
             responsive: true,
             plugins: {
                 legend: {
-                    labels: { color: '#e2e8f0' }
+                    display: false
                 }
             },
             scales: {
@@ -66,52 +66,67 @@
                     grid: { color: '#4a5568' }
                 },
                 x: {
-                    ticks: { color: '#a0aec0' },
+                    ticks: { 
+                        color: '#a0aec0',
+                        callback: function(value) {
+                            return this.getLabelForValue(value);
+                        }
+                    },
                     grid: { color: '#4a5568' }
                 }
             }
         };
 
-        // 1. Common Questions Chart (Bar)
+        // 1. Common Questions List
         if (analysisData.most_common_questions && analysisData.most_common_questions.length > 0) {
-            const cqCtx = document.getElementById('common-questions-chart').getContext('2d');
-            commonQuestionsChart = createChart(cqCtx, 'bar', {
-                labels: analysisData.most_common_questions.map((q, i) => `問題 ${i + 1}`),
+            const container = document.getElementById('common-questions-chart').parentElement;
+            container.innerHTML = '<h3>最常出現的提問</h3><ol class="question-list"></ol>';
+            const ol = container.querySelector('.ol');
+            analysisData.most_common_questions.forEach((question, index) => {
+                const li = document.createElement('li');
+                li.textContent = question;
+                li.className = 'question-item';
+                container.querySelector('.question-list').appendChild(li);
+            });
+        }
+
+        // 2. Top Keywords Chart (Bar)
+        if (analysisData.top_keywords) {
+            const tkCtx = document.getElementById('top-keywords-chart').getContext('2d');
+            const keywords = Object.keys(analysisData.top_keywords);
+            const counts = Object.values(analysisData.top_keywords);
+            
+            // Sort keywords and counts by count in descending order
+            const combined = keywords.map((k, i) => ({ keyword: k, count: counts[i] }));
+            combined.sort((a, b) => b.count - a.count);
+            
+            topKeywordsChart = createChart(tkCtx, 'bar', {
+                labels: combined.map(item => item.keyword),
                 datasets: [{
-                    label: '最常見問題',
-                    data: analysisData.most_common_questions.map(() => Math.floor(Math.random() * 20) + 5), // Using random counts for visualization
+                    label: '出現次數',
+                    data: combined.map(item => item.count),
                     backgroundColor: '#3182ce',
                 }]
-            }, chartOptions);
+            }, {
+                ...chartOptions,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                }
+            });
         }
 
-        // 2. Top Keywords Chart (Doughnut)
-        if (analysisData.top_keywords && analysisData.top_keywords.length > 0) {
-            const tkCtx = document.getElementById('top-keywords-chart').getContext('2d');
-            const keywords = analysisData.top_keywords.map(k => k.keyword);
-            const counts = analysisData.top_keywords.map(k => k.count);
-            
-            topKeywordsChart = createChart(tkCtx, 'doughnut', {
-                labels: keywords,
-                datasets: [{
-                    label: '關鍵字',
-                    data: counts,
-                    backgroundColor: ['#dd6b20', '#38a169', '#3182ce', '#d53f8c', '#faf089', '#6b46c1', '#f56565', '#4fd1c5', '#f6ad55', '#a0aec0'],
-                }]
-            }, { ...chartOptions, scales: {} });
-        }
-
-        // 3. Active Users Chart (Horizontal Bar)
+        // 3. Most Active Users List
         if (analysisData.most_active_users && analysisData.most_active_users.length > 0) {
-            const auCtx = document.getElementById('active-users-chart').getContext('2d');
-            activeUsersChart = createChart(auCtx, 'bar', {
-                labels: analysisData.most_active_users,
-                datasets: [{
-                    label: '活躍用戶',
-                    data: analysisData.most_active_users.map(() => Math.floor(Math.random() * 20) + 5), // Using random counts for visualization
-                    backgroundColor: '#38a169',
-                }]
-            }, { ...chartOptions, indexAxis: 'y' });
+            const container = document.getElementById('active-users-chart').parentElement;
+            container.innerHTML = '<h3>單月提問次數最多使用者</h3><ol class="users-list"></ol>';
+            const ol = container.querySelector('.ol');
+            analysisData.most_active_users.forEach((user, index) => {
+                const li = document.createElement('li');
+                li.textContent = user;
+                li.className = 'user-item';
+                container.querySelector('.users-list').appendChild(li);
+            });
         }
     }
 
