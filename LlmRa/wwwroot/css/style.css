@@ -125,6 +125,16 @@ header p {
     gap: 24px;
 }
 
+.no-data {
+    text-align: center;
+    color: #a0aec0;
+    font-style: italic;
+    padding: 20px;
+    background-color: #2d3748;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
 .chart-container {
     background-color: #1a202c;
     padding: 16px;

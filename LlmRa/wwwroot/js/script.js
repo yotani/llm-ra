@@ -50,6 +50,14 @@
     }
 
     function renderCharts(analysisData) {
+        console.log('Start rendering charts...');
+        
+        if (!analysisData) {
+            console.error('No analysis data provided');
+            showError('無法繪製圖表：未收到分析資料');
+            return;
+        }
+
         console.log('Rendering charts with data:', analysisData);
         destroyCharts(); // Clear previous charts
 
@@ -78,55 +86,75 @@
         };
 
         // 1. Common Questions List
+        console.log('Rendering common questions:', analysisData.most_common_questions);
+        const questionsContainer = document.getElementById('common-questions-chart').parentElement;
         if (analysisData.most_common_questions && analysisData.most_common_questions.length > 0) {
-            const container = document.getElementById('common-questions-chart').parentElement;
-            container.innerHTML = '<h3>最常出現的提問</h3><ol class="question-list"></ol>';
-            const ol = container.querySelector('.ol');
+            questionsContainer.innerHTML = '<h3>最常出現的提問</h3><ol class="question-list"></ol>';
             analysisData.most_common_questions.forEach((question, index) => {
                 const li = document.createElement('li');
                 li.textContent = question;
                 li.className = 'question-item';
-                container.querySelector('.question-list').appendChild(li);
+                questionsContainer.querySelector('.question-list').appendChild(li);
             });
+        } else {
+            questionsContainer.innerHTML = '<h3>最常出現的提問</h3><p class="no-data">無資料</p>';
+            console.log('No common questions data available');
         }
 
         // 2. Top Keywords Chart (Bar)
-        if (analysisData.top_keywords) {
+        console.log('Rendering top keywords:', analysisData.top_keywords);
+        const keywordsContainer = document.getElementById('top-keywords-chart').parentElement;
+        if (analysisData.top_keywords && Object.keys(analysisData.top_keywords).length > 0) {
             const tkCtx = document.getElementById('top-keywords-chart').getContext('2d');
-            const keywords = Object.keys(analysisData.top_keywords);
-            const counts = Object.values(analysisData.top_keywords);
-            
-            // Sort keywords and counts by count in descending order
-            const combined = keywords.map((k, i) => ({ keyword: k, count: counts[i] }));
-            combined.sort((a, b) => b.count - a.count);
-            
-            topKeywordsChart = createChart(tkCtx, 'bar', {
-                labels: combined.map(item => item.keyword),
-                datasets: [{
-                    label: '出現次數',
-                    data: combined.map(item => item.count),
-                    backgroundColor: '#3182ce',
-                }]
-            }, {
-                ...chartOptions,
-                indexAxis: 'y',
-                plugins: {
-                    legend: { display: false }
-                }
-            });
+            try {
+                const keywords = Object.keys(analysisData.top_keywords);
+                const counts = Object.values(analysisData.top_keywords);
+                
+                // Sort keywords and counts by count in descending order
+                const combined = keywords.map((k, i) => ({ keyword: k, count: counts[i] }));
+                combined.sort((a, b) => b.count - a.count);
+                
+                console.log('Preparing chart data:', combined);
+                
+                topKeywordsChart = createChart(tkCtx, 'bar', {
+                    labels: combined.map(item => item.keyword),
+                    datasets: [{
+                        label: '出現次數',
+                        data: combined.map(item => item.count),
+                        backgroundColor: '#3182ce',
+                    }]
+                }, {
+                    ...chartOptions,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                });
+                console.log('Keywords chart created successfully');
+            } catch (error) {
+                console.error('Error creating keywords chart:', error);
+                keywordsContainer.innerHTML = '<h3>問題關鍵字 Top 10</h3><p class="no-data">圖表繪製失敗</p>';
+            }
+        } else {
+            keywordsContainer.innerHTML = '<h3>問題關鍵字 Top 10</h3><p class="no-data">無資料</p>';
+            console.log('No keywords data available');
         }
 
         // 3. Most Active Users List
+        console.log('Rendering active users:', analysisData.most_active_users);
+        const usersContainer = document.getElementById('active-users-chart').parentElement;
         if (analysisData.most_active_users && analysisData.most_active_users.length > 0) {
-            const container = document.getElementById('active-users-chart').parentElement;
-            container.innerHTML = '<h3>單月提問次數最多使用者</h3><ol class="users-list"></ol>';
-            const ol = container.querySelector('.ol');
+            usersContainer.innerHTML = '<h3>單月提問次數最多使用者</h3><ol class="users-list"></ol>';
             analysisData.most_active_users.forEach((user, index) => {
                 const li = document.createElement('li');
                 li.textContent = user;
                 li.className = 'user-item';
-                container.querySelector('.users-list').appendChild(li);
+                usersContainer.querySelector('.users-list').appendChild(li);
             });
+            console.log('Active users list created successfully');
+        } else {
+            usersContainer.innerHTML = '<h3>單月提問次數最多使用者</h3><p class="no-data">無資料</p>';
+            console.log('No active users data available');
         }
     }
 
@@ -181,9 +209,19 @@
                 throw new Error(`無法獲取最終分析結果: ${finalResultResponse.statusText}`);
             }
             const finalData = await finalResultResponse.json();
+            console.log('Raw API response:', finalData);
+
+            // Transform the data to match the expected format
+            const transformedData = {
+                most_common_questions: finalData.most_common_questions || [],
+                top_keywords: finalData.top_keywords || {},
+                most_active_users: finalData.most_active_users || []
+            };
+
+            console.log('Transformed data:', transformedData);
 
             // Step 5: Render the charts
-            renderCharts(finalData);
+            renderCharts(transformedData);
 
         } catch (error) {
             showError(error.message);
