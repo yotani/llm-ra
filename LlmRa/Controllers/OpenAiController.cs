@@ -29,6 +29,16 @@ namespace LlmRa.Controllers
                 return BadRequest("Text to analyze cannot be empty.");
             }
 
+            // Truncate the input to avoid exceeding OpenAI's token-per-minute (TPM) rate limits.
+            // This is a safeguard against very large chat logs.
+            const int MAX_CHAR_LIMIT = 200000; 
+            var textToAnalyze = request.TextToAnalyze;
+            if (textToAnalyze.Length > MAX_CHAR_LIMIT)
+            {
+                // Take the most recent part of the logs by taking from the end of the string.
+                textToAnalyze = textToAnalyze.Substring(textToAnalyze.Length - MAX_CHAR_LIMIT);
+            }
+
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", openAiApiKey);
 
@@ -46,7 +56,7 @@ namespace LlmRa.Controllers
                     new OpenApiMessage
                     {
                         Role = "user",
-                        Content = request.TextToAnalyze
+                        Content = textToAnalyze
                     }
                 }
             };

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\llm-code\\llm-ra\\llmra\\LlmRa.csproj": {}
+    "C:\\llm-code\\llm-ra\\LlmRa\\LlmRa.csproj": {}
   },
   "projects": {
-    "C:\\llm-code\\llm-ra\\llmra\\LlmRa.csproj": {
+    "C:\\llm-code\\llm-ra\\LlmRa\\LlmRa.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\llm-code\\llm-ra\\llmra\\LlmRa.csproj",
+        "projectUniqueName": "C:\\llm-code\\llm-ra\\LlmRa\\LlmRa.csproj",
         "projectName": "LlmRa",
-        "projectPath": "C:\\llm-code\\llm-ra\\llmra\\LlmRa.csproj",
+        "projectPath": "C:\\llm-code\\llm-ra\\LlmRa\\LlmRa.csproj",
         "packagesPath": "C:\\Users\\sinur\\.nuget\\packages\\",
-        "outputPath": "C:\\llm-code\\llm-ra\\llmra\\obj\\",
+        "outputPath": "C:\\llm-code\\llm-ra\\LlmRa\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sinur\\AppData\\Roaming\\NuGet\\NuGet.Config"
