@@ -35,11 +35,13 @@ namespace LlmRa.Models
 
     public class OpenApiChatResponse
     {
+        [JsonPropertyName("choices")]
         public List<Choice>? Choices { get; set; }
     }
 
     public class Choice
     {
+        [JsonPropertyName("message")]
         public OpenApiMessage? Message { get; set; }
     }
 }
