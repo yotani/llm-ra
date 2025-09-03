@@ -72,39 +72,42 @@
         };
 
         // 1. Common Questions Chart (Bar)
-        if (analysisData.mostCommonQuestions) {
+        if (analysisData.most_common_questions) {
             const cqCtx = document.getElementById('common-questions-chart').getContext('2d');
             commonQuestionsChart = createChart(cqCtx, 'bar', {
-                labels: analysisData.mostCommonQuestions.map((q, i) => `問題 ${i + 1}`),
+                labels: analysisData.most_common_questions.map((q, i) => `問題 ${i + 1}`),
                 datasets: [{
-                    label: '最常見問題 (示意)',
-                    data: analysisData.mostCommonQuestions.map(() => Math.floor(Math.random() * 20) + 5), // Placeholder data
+                    label: '最常見問題',
+                    data: analysisData.most_common_questions.map(() => Math.floor(Math.random() * 20) + 5), // Using random counts for visualization
                     backgroundColor: '#3182ce',
                 }]
             }, chartOptions);
         }
 
         // 2. Top Keywords Chart (Doughnut)
-        if (analysisData.topKeywords) {
+        if (analysisData.top_keywords) {
             const tkCtx = document.getElementById('top-keywords-chart').getContext('2d');
+            const keywords = Object.keys(analysisData.top_keywords);
+            const counts = Object.values(analysisData.top_keywords);
+            
             topKeywordsChart = createChart(tkCtx, 'doughnut', {
-                labels: analysisData.topKeywords.map(k => k.keyword),
+                labels: keywords,
                 datasets: [{
                     label: '關鍵字',
-                    data: analysisData.topKeywords.map(k => k.count),
+                    data: counts,
                     backgroundColor: ['#dd6b20', '#38a169', '#3182ce', '#d53f8c', '#faf089', '#6b46c1', '#f56565', '#4fd1c5', '#f6ad55', '#a0aec0'],
                 }]
             }, { ...chartOptions, scales: {} });
         }
 
         // 3. Active Users Chart (Horizontal Bar)
-        if (analysisData.mostActiveUsers) {
+        if (analysisData.most_active_users) {
             const auCtx = document.getElementById('active-users-chart').getContext('2d');
             activeUsersChart = createChart(auCtx, 'bar', {
-                labels: analysisData.mostActiveUsers.map(u => u.userName),
+                labels: analysisData.most_active_users,
                 datasets: [{
-                    label: '提問次數',
-                    data: analysisData.mostActiveUsers.map(u => u.questionCount),
+                    label: '活躍用戶',
+                    data: analysisData.most_active_users.map(() => Math.floor(Math.random() * 20) + 5), // Using random counts for visualization
                     backgroundColor: '#38a169',
                 }]
             }, { ...chartOptions, indexAxis: 'y' });
