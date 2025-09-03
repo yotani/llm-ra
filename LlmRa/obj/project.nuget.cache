@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FoJe73yY/JbIwDBiQL85B6hdhWR2ArStbfK0QfLR3UnS15oH7PTqM5LvvRuxNmN1jYrKBoln43Va9wWTLSADTg==",
+  "dgSpecHash": "MAjGfXWktbCej+0weqkfpYa92i1C7eAHGbdKCOxZ64lzq5J05/7g+ec//3TRZRPaKCI4mMhizUWW2UTlUSIu1A==",
   "success": true,
-  "projectFilePath": "C:\\llm-code\\llm-ra\\LlmRa\\LlmRa.csproj",
+  "projectFilePath": "C:\\llm-code\\llm-ra\\llmra\\LlmRa.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sinur\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\sinur\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",

@@ -10,10 +10,12 @@ namespace LlmRa.Controllers
     public class OpenAiController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<OpenAiController> _logger;
 
-        public OpenAiController(IHttpClientFactory httpClientFactory)
+        public OpenAiController(IHttpClientFactory httpClientFactory, ILogger<OpenAiController> logger)
         {
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
 
         [HttpPost("analyze")]
@@ -67,29 +69,32 @@ namespace LlmRa.Controllers
             try
             {
                 var response = await client.PostAsync("https://api.openai.com/v1/chat/completions", content);
+                var responseBody = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseBody = await response.Content.ReadAsStringAsync();
+                    _logger.LogInformation("Received successful response from OpenAI: {ResponseBody}", responseBody);
                     var openAiResponse = JsonSerializer.Deserialize<OpenApiChatResponse>(responseBody);
                     
-                    if (openAiResponse?.Choices != null && openAiResponse.Choices.Count > 0)
+                    if (openAiResponse?.Choices != null && openAiResponse.Choices.Count > 0 && openAiResponse.Choices[0].Message?.Content != null)
                     {
-                        var analysisResult = openAiResponse.Choices[0].Message?.Content;
+                        var analysisResult = openAiResponse.Choices[0].Message.Content;
                         // The result from OpenAI should already be a JSON string, so we return it directly.
-                        return Content(analysisResult ?? "{}", "application/json");
+                        return Content(analysisResult, "application/json");
                     }
                     
-                    return StatusCode(500, "Failed to parse response from OpenAI.");
+                    _logger.LogWarning("OpenAI response was successful, but content was not in the expected format. Raw response: {ResponseBody}", responseBody);
+                    return StatusCode(500, $"Failed to parse response from OpenAI. Raw response: {responseBody}");
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    return StatusCode((int)response.StatusCode, $"Error from OpenAI API: {errorContent}");
+                    _logger.LogError("Error from OpenAI API. Status: {StatusCode}, Body: {ResponseBody}", response.StatusCode, responseBody);
+                    return StatusCode((int)response.StatusCode, $"Error from OpenAI API: {responseBody}");
                 }
             }
             catch (HttpRequestException ex)
             {
+                _logger.LogError(ex, "Could not connect to OpenAI API.");
                 return StatusCode(503, $"Service Unavailable: Could not connect to OpenAI API. {ex.Message}");
             }
         }
